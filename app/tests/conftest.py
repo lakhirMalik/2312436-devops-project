@@ -1,19 +1,21 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import sys
 import os
 
+# This must happen BEFORE importing anything from app
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from fastapi.testclient import TestClient
 from database import Base, get_db
 from main import app
 
-SQLALCHEMY_TEST_URL = "sqlite:///./test.db"
-
 engine = create_engine(
-    SQLALCHEMY_TEST_URL, connect_args={"check_same_thread": False}
+    "sqlite:///./test.db",
+    connect_args={"check_same_thread": False}
 )
 TestingSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine
@@ -21,27 +23,20 @@ TestingSessionLocal = sessionmaker(
 
 
 @pytest.fixture(scope="function")
-def db():
+def client():
     Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        Base.metadata.drop_all(bind=engine)
 
-
-@pytest.fixture(scope="function")
-def client(db):
     def override_get_db():
+        db = TestingSessionLocal()
         try:
             yield db
         finally:
-            pass
+            db.close()
 
     app.dependency_overrides[get_db] = override_get_db
-    Base.metadata.create_all(bind=engine)
+
     with TestClient(app) as c:
         yield c
+
     app.dependency_overrides.clear()
     Base.metadata.drop_all(bind=engine)
