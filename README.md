@@ -47,7 +47,7 @@ deployed on AWS EC2 with a fully automated CI/CD pipeline using GitHub Actions.
 1. **Clone the repository**
 ```bash
    git clone https://github.com/lakhirMalik/2312436-devops-project.git
-   cd YOUR_REGNUM-devops-project
+   cd 2312436-devops-project
 ```
 
 2. **Create your .env file**
@@ -106,6 +106,6 @@ The app auto-deploys to AWS EC2 on every push to the `main` branch via the CD pi
 | `POSTGRES_USER`   | Database username            |
 | `POSTGRES_PASSWORD` | Database password          |
 | `POSTGRES_DB`     | Database name                |
-| `STUDENT_REG_NO`  | Your registration number     |
+| `STUDENT_REG_NO`  | 2312436     |
 
 > Never commit your `.env` file. Use `.env.example` as a template.
