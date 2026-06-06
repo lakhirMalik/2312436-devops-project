@@ -109,3 +109,4 @@ The app auto-deploys to AWS EC2 on every push to the `main` branch via the CD pi
 | `STUDENT_REG_NO`  | 2312436     |
 
 > Never commit your `.env` file. Use `.env.example` as a template.
+# deployed
